@@ -1,4 +1,4 @@
-package Day2InClass;
+package FirstProject;
 import java.util.Random;
 
 
@@ -22,7 +22,8 @@ public class FirstProjectApp {
 
         Random rand = new Random();
 
-        Dog fido = new Dog("Lucas", 5, "Mutt");
+        Dog fido = new Dog("Lucas",rand.nextInt(1,10), "Mutt");
         System.out.println("\n" + fido);
+        
     }
 }
