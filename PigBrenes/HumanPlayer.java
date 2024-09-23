@@ -1,6 +1,10 @@
 package PigBrenes;
 import java.util.Scanner;
 
+/**
+ * Human Player class -- handles user input and player mechanics
+ */
+
 public class HumanPlayer {
     private int roundScore;
     private int totalScore;
@@ -9,6 +13,9 @@ public class HumanPlayer {
     private boolean playerTurn;
 
 
+    /**
+     * Creates default instance of human player
+     */
     public HumanPlayer(){
         roundScore = 0;
         totalScore = 0;
@@ -17,14 +24,29 @@ public class HumanPlayer {
         playerTurn = true;
     }
 
+    /**
+     *
+     * @return player's total score
+     */
     public int getTotalScore() {return roundScore;}
 
+    /**
+     *
+     * @return boolean to know if it's player's turn or not
+     */
     public boolean getPlayerTurn() {return playerTurn;}
 
+    /**
+     *
+     * @param t -- used to set playerTurn truth value during gameplay
+     */
     public void setPlayerTurn(boolean t){
         playerTurn = t;
     }
 
+    /**
+     * Main gameplay function for human player, handles user input and game dice interactions.
+     */
     public void play(){
         System.out.println("Would you like to roll? (Y, N)");
         String ans = scan.next().toLowerCase();
@@ -62,6 +84,11 @@ public class HumanPlayer {
 
         }
     }
+
+    /**
+     * test bed for human player class
+     * @param args -- default main argument
+     */
     public static void main(String[] args) {
         HumanPlayer p = new HumanPlayer();
         while(p.getTotalScore() < 100 && p.playerTurn){

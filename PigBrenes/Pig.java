@@ -2,9 +2,17 @@ package PigBrenes;
 
 import java.util.Scanner;
 
+/**
+ * Main gameplay class
+ */
+
 public class Pig {
 
 
+    /**
+     *  Main gameplay loop
+     * @param args -- default main argument
+     */
     public static void main(String[] args) {
 	// write your code here
         HumanPlayer human = new HumanPlayer();
