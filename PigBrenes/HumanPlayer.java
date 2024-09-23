@@ -28,7 +28,7 @@ public class HumanPlayer {
      *
      * @return player's total score
      */
-    public int getTotalScore() {return roundScore;}
+    public int getTotalScore() {return totalScore;}
 
     /**
      *
