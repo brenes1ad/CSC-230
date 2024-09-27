@@ -28,10 +28,13 @@ public class HumanPlayer implements Player {
             case "y":
                 return false;
             case "n":
+                totalScore += roundScore;
+                System.out.println("Total Score: " + totalScore + "\n");
+                roundScore = 0;
                 return true;
             default:
-                System.out.println("Invalid Answer");
-                return false;
+                System.out.println("Invalid Answer. Ending Turn");
+                return true;
         }
     }
 
@@ -54,7 +57,6 @@ public class HumanPlayer implements Player {
     public void setTotalScore(int s){
         totalScore = s;
     }
-
 
 
     public static void main(String[] args){

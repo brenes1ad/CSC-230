@@ -17,7 +17,13 @@ public class ComputerPlayer implements Player{
     public int getRoundScore() {return roundScore;}
 
     public boolean timeToQuit(){
-        return roundScore >= 20;
+        if (roundScore > 20){
+             totalScore += roundScore;
+             roundScore = 0;
+             System.out.println("Total Score: " + totalScore + "\n");
+            return true;
+        }
+        return false;
     }
 
     public void rollDice() {

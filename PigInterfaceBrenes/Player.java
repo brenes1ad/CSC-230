@@ -12,4 +12,5 @@ public interface Player {
     public void setTurn(boolean t);
     public void setRoundScore(int s);
     public void setTotalScore(int s);
+
 }

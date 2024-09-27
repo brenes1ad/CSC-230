@@ -5,7 +5,7 @@ public class PigGame {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         HumanPlayer player1 = new HumanPlayer();
-        Player player2;
+        Player player2 = null;
         Player currentPlayer = player1;
 
         while (true) {
@@ -30,7 +30,7 @@ public class PigGame {
         }
         while (currentPlayer.getTotalScore() < 100) {
             boolean quit = currentPlayer.timeToQuit();
-            if (!quit) {
+            if (!quit && currentPlayer.isTurn()) {
                 currentPlayer.rollDice();
                 if (currentPlayer.d.getDie1Value() != 1 && currentPlayer.d.getDie2Value() != 1) {
                     currentPlayer.setRoundScore(currentPlayer.getRoundScore() + currentPlayer.d.sum());
@@ -46,7 +46,23 @@ public class PigGame {
                 }
             } else{
                 currentPlayer.setTotalScore(currentPlayer.getTotalScore() + currentPlayer.getRoundScore());
-                // Need to implement method to change the current player
+                System.out.println("Switching Players" + "\n");
+                if (player1.isTurn()){
+                    player1.setTurn(false);
+                    currentPlayer = player2;
+                    player2.setTurn(true);
+                } else{
+                    player2.setTurn(false);
+                    currentPlayer = player1;
+                    player1.setTurn(true);
+                }
+            }
+            if (player1.getTotalScore() >= 100){
+                System.out.println("Player 1 Wins!");
+                break;
+            } else if(player2.getTotalScore() >= 100){
+                System.out.println("Player 2 Wins!");
+                break;
             }
         }
     }
