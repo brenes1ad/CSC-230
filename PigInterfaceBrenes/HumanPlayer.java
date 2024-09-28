@@ -1,7 +1,5 @@
 package PigInterfaceBrenes;
 import java.util.Scanner;
-import PigBrenes.PairOfDice;
-
 
 
 public class HumanPlayer implements Player {
@@ -9,6 +7,7 @@ public class HumanPlayer implements Player {
     private int totalScore;
     private boolean playerTurn;
     private Scanner scan;
+    private boolean playing;
 
     public HumanPlayer(){
         roundScore = 0;
@@ -22,7 +21,7 @@ public class HumanPlayer implements Player {
     public int getRoundScore() {return roundScore;}
 
     public boolean timeToQuit(){
-        System.out.println("Would you like to roll again (Y, N)");
+        System.out.println("Would you like to roll? (Y, N)");
         String ans = scan.nextLine().toLowerCase();
         switch(ans){
             case "y":
@@ -31,6 +30,7 @@ public class HumanPlayer implements Player {
                 totalScore += roundScore;
                 System.out.println("Total Score: " + totalScore + "\n");
                 roundScore = 0;
+                playerTurn = false;
                 return true;
             default:
                 System.out.println("Invalid Answer. Ending Turn");
@@ -57,6 +57,10 @@ public class HumanPlayer implements Player {
     public void setTotalScore(int s){
         totalScore = s;
     }
+
+    public boolean isPlaying(){return playing;}
+
+    public void setPlaying(boolean p){playing = p;}
 
 
     public static void main(String[] args){

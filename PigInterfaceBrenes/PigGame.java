@@ -29,6 +29,7 @@ public class PigGame {
             }
         }
         while (currentPlayer.getTotalScore() < 100) {
+            currentPlayer.setPlaying(true);
             boolean quit = currentPlayer.timeToQuit();
             if (!quit && currentPlayer.isTurn()) {
                 currentPlayer.rollDice();
@@ -37,6 +38,7 @@ public class PigGame {
                     System.out.println("Round Score: " + currentPlayer.getRoundScore());
                 } else if (currentPlayer.d.getDie1Value() == 1 && currentPlayer.d.getDie2Value() == 1) {
                     currentPlayer.setTotalScore(0);
+                    currentPlayer.setRoundScore(0);
                     currentPlayer.setTurn(false);
                     System.out.println("Total Score: " + currentPlayer.getTotalScore() + "\n");
                 } else if (currentPlayer.d.getDie1Value() == 1 || currentPlayer.d.getDie2Value() == 1) {
@@ -44,16 +46,19 @@ public class PigGame {
                     currentPlayer.setTurn(false);
                     System.out.println("Total Score: " + currentPlayer.getTotalScore() + "\n");
                 }
-            } else{
+            }
+            if(!currentPlayer.isTurn()){
                 currentPlayer.setTotalScore(currentPlayer.getTotalScore() + currentPlayer.getRoundScore());
-                System.out.println("Switching Players" + "\n");
-                if (player1.isTurn()){
+                System.out.println("________________Switching Players______________________" + "\n");
+                if (player1.isPlaying()){
                     player1.setTurn(false);
                     currentPlayer = player2;
+                    player1.setPlaying(false);
                     player2.setTurn(true);
                 } else{
                     player2.setTurn(false);
                     currentPlayer = player1;
+                    player2.setPlaying(false);
                     player1.setTurn(true);
                 }
             }

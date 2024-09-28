@@ -1,10 +1,10 @@
 package PigInterfaceBrenes;
-import PigBrenes.PairOfDice;
 
 public class ComputerPlayer implements Player{
     private int roundScore;
     private int totalScore;
     private boolean computerTurn;
+    private boolean playing;
 
     ComputerPlayer() {
         roundScore = 0;
@@ -21,6 +21,7 @@ public class ComputerPlayer implements Player{
              totalScore += roundScore;
              roundScore = 0;
              System.out.println("Total Score: " + totalScore + "\n");
+             computerTurn = false;
             return true;
         }
         return false;
@@ -46,4 +47,8 @@ public class ComputerPlayer implements Player{
     public void setTotalScore(int s){
         totalScore = s;
     }
+
+    public boolean isPlaying(){return playing;}
+
+    public void setPlaying(boolean p){playing = p;}
 }
