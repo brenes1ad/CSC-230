@@ -1,7 +1,17 @@
 package PigInterfaceBrenes;
 import java.util.Scanner;
 
+/**
+ * PigGame -- main class for gameplay of PIG
+ */
+
 public class PigGame {
+
+    /**
+     * Main gameplay class, uses currentPlayer Interface pointer to control gameplay for both types of players
+     * without explicit type calls
+     * @param args default main method argument
+     */
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         HumanPlayer player1 = new HumanPlayer();
