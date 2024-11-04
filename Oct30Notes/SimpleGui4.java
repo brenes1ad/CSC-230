@@ -16,7 +16,7 @@ public class SimpleGui4 {
                 if (clickCounter++ == 0){
                     button.setText("I've been clicked!");
                 } else if(clickCounter < 20){
-                    button.setText("Ive been clicked " + clickCounter + " times");
+                    button.setText("I've been clicked " + clickCounter + " times");
                 } else{
                     System.exit(0);
                 }
