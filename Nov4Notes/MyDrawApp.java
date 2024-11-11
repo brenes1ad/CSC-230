@@ -25,7 +25,13 @@ public class MyDrawApp{
         });
 
         button2 = new JButton("Change Label");
-        button2.addActionListener(event -> button2.setText("What?" + n++));
+        button2.addActionListener(event -> {
+            String s = JOptionPane.showInputDialog(frame, "What do you want for a new label?");
+            int choice = JOptionPane.showConfirmDialog(frame, "Are you sure you want that?");
+            if (choice == JOptionPane.YES_OPTION) {
+                button2.setText(s + " " + n++ + " times");
+            }
+        });
 
         MyDrawPanel panel = new MyDrawPanel();
         frame.getContentPane().add(BorderLayout.SOUTH, button1);
