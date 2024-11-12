@@ -7,15 +7,26 @@ import java.util.Random;
 
 import static javax.sound.midi.ShortMessage.*;
 
+/**
+ * Mini MIDI music playing application. Plays random MIDI notes and draws a random rectangle for each note played
+ */
 public class MiniMusicPlayer {
     private MyDrawPanel panel;
     private Random random = new Random();
 
+    /**
+     * Main method to create instance of the player and call the primary action method, go().
+     * @param args unused
+     */
     public static void main(String[] args) {
         MiniMusicPlayer mini = new MiniMusicPlayer();
         mini.go();
     }
 
+    /**
+     * Simple class to set up graphic interface.
+     * Creates frame and panel used for drawing
+     */
     public void setUpGui(){
         JFrame frame = new JFrame("My First Music Video");
         panel = new MyDrawPanel();
@@ -25,6 +36,10 @@ public class MiniMusicPlayer {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
+    /**
+     * Main running method for application.
+     * Creates GUI and handles MIDI sequencer and note playing
+     */
     public void go(){
         setUpGui();
 
@@ -50,6 +65,15 @@ public class MiniMusicPlayer {
         }
     }
 
+    /**
+     * Creates a MIDI event with specified parameters
+     * @param cmd command for the MIDI messages (ON, OFF, CHANGE)
+     * @param chnl the channel the message is sent to
+     * @param one the first data byte for the message
+     * @param two the second data byte for the message
+     * @param tick the timestamp for the event in tick speed
+     * @return the created MidiEvent or null and throws exception if an exception occurs
+     */
     public static MidiEvent makeEvent(int cmd, int chnl, int one, int two, int tick){
         MidiEvent event = null;
         try{
@@ -62,14 +86,27 @@ public class MiniMusicPlayer {
         return event;
     }
 
+    /**
+     * Class to handle drawing panel changes and updates
+     */
     class MyDrawPanel extends JPanel implements ControllerEventListener{
+        /** Used to act out changes iff the MIDI sequencer sends a message(plays a note) **/
         private boolean msg = false;
 
+        /**
+         *  Called when Sequencer sends a control-change event. Calls the repaint method to update the panel
+         * @param event the control-change event that the sequencer encountered in
+         *         the sequence it is processing
+         */
         public void controlChange(ShortMessage event){
             msg = true;
             repaint();
         }
 
+        /**
+         * Simple method to draw a random rectangle iff the sequencer sends a message.
+         * @param g the <code>Graphics</code> object to protect
+         */
         public void paintComponent(Graphics g){
             if (msg){
                 int r = random.nextInt(250);
