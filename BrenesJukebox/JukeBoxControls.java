@@ -23,6 +23,8 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 
 /**
+ * Mini Jukebox Application. Has the Ability to pause, play, and rewind songs; displays album covers;
+ * and display audio visualizer
  * @author thall
  *
  */
@@ -38,6 +40,9 @@ public class JukeBoxControls extends JPanel {
 
     private static String localDir = "C:/Users/adbre/IdeaProjects/CSC-230/BrenesJukebox/";
 
+	/**
+	 * Default Constructor for Jukebox controls. Initializes audio files, buttons, and main window
+	 */
 	public JukeBoxControls() {
 
 		File f1, f2, f3, f4, f5;
@@ -45,18 +50,19 @@ public class JukeBoxControls extends JPanel {
 		// get the audio clips if we can!
 		
 		try {
-			f1 = new File(localDir + "classical.wav");
-			f2 = new File(localDir + "eightiesJam.wav");
-			f3 = new File(localDir + "hitchcock.wav");
-			f4 = new File(localDir + "newAgeRythm.wav");
-			f5 = new File(localDir + "westernBeat.wav");
+			f1 = new File(localDir + "Graves Into Gardens.wav");
+			f2 = new File(localDir + "Separate Ways.wav");
+			f3 = new File(localDir + "Love Like This.wav");
+			f4 = new File(localDir + "Ripple.wav");
+			f5 = new File(localDir + "If This Is It.wav");
 		} catch (Exception e) {
 			System.err.println("Houston, we have a problem.");
 		}
 		musicFile = new File [] { null, f1, f2, f3, f4, f5};
 
-		String[] musicNames = { "Pick some jams!", "Classical Melody", "80s Jam", "Alfred Hitchcock Theme",
-				"New Age Rhythm", "Western Beat" };
+		String[] musicNames = { "Pick some jams!", "Graves Into Gardens - Elevation Worship", "Separate Ways - Journey",
+				"Love Like This - Ben Rector",
+				"Ripple - Spirited", "If This Is It - Huey Lewis & The News" };
 
 		musicCombo = new JComboBox<String>(musicNames);
 		musicCombo.setBackground(Color.CYAN);
