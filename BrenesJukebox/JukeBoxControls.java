@@ -32,11 +32,12 @@ import javax.swing.*;
 public class JukeBoxControls extends JPanel {
 
 	private JComboBox<String> musicCombo;
-	private JButton stopButton, playButton;
+	private JButton stopButton, playButton, rewindButton;
 	private File[] musicFile;
 	private File current;
 	private AudioInputStream audioStream;
 	private Clip audioClip;
+	private Image image;
 
     private static String localDir = "C:/Users/adbre/IdeaProjects/CSC-230/BrenesJukebox/";
 
@@ -70,24 +71,35 @@ public class JukeBoxControls extends JPanel {
 		// Need to use getResource method to load image into Icon
 		ImageIcon playIcon = new ImageIcon(getClass().getResource("play25x25.png"));
 		ImageIcon stopIcon = new ImageIcon(getClass().getResource("pause.png"));
+		ImageIcon rewindIcon = new ImageIcon(getClass().getResource("rewindImage.png"));
 		playButton = new JButton(null, playIcon);
 		playButton.setBackground(Color.CYAN);
 		stopButton = new JButton(null, stopIcon);
 		stopButton.setBackground(Color.CYAN);
+		rewindButton = new JButton(null, rewindIcon);
+		rewindButton.setBackground(Color.CYAN);
 
-		setPreferredSize(new Dimension(300, 100));
+
+		setPreferredSize(new Dimension(300, 150));
 		setBackground(Color.CYAN);
 		add(musicCombo);
+		add(rewindButton);
 		add(playButton);
 		add(stopButton);
 
 		musicCombo.addActionListener(new ComboListener());
 		stopButton.addActionListener(event -> {if (current != null) audioClip.stop();});
 		playButton.addActionListener(event -> {if (current != null) audioClip.start();});
+		rewindButton.addActionListener(event -> {if (current != null) audioClip.setFramePosition(0);});
+
 
 		current = null;
 	}
-	
+
+	/**
+	 * Action Listener Class for Combo Selector to choose what song you want to play.
+	 * Handles the audio playing.
+	 */
 	private class ComboListener implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
 
@@ -103,6 +115,28 @@ public class JukeBoxControls extends JPanel {
 					DataLine.Info info = new DataLine.Info(Clip.class, format);
 					audioClip = (Clip) AudioSystem.getLine(info);
 					audioClip.open(audioStream);
+
+					switch (musicCombo.getSelectedIndex()) {
+						case 1:
+							image = new ImageIcon(getClass(). getResource("gravesIntoGardensCover.png")).getImage();
+							break;
+						case 2:
+							image = new ImageIcon(getClass(). getResource("SeparateWaysCover.png")).getImage();
+							break;
+						case 3:
+							image = new ImageIcon(getClass(). getResource("LoveLikeThisCover.png")).getImage();
+							break;
+						case 4:
+							image = new ImageIcon(getClass(). getResource("SpiritedCover.png")).getImage();
+							break;
+						case 5:
+							image = new ImageIcon(getClass(). getResource("sportsCover.png")).getImage();
+							break;
+						default:
+							image = null;
+							break;
+					}
+					repaint();
 				}
 			} catch (IOException exception) {
 				System.err.println(exception);
@@ -112,5 +146,15 @@ public class JukeBoxControls extends JPanel {
 				System.err.println(exception);
 			}
 		}
+	}
+
+	/**
+	 * Override paintComponent class to draw the album covers on the Jukebox
+	 * @param g the <code>Graphics</code> object to protect
+	 */
+	@Override
+	public void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		g.drawImage(image, 125, 80, this);
 	}
 }
