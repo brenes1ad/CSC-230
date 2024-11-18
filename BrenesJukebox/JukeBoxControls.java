@@ -13,6 +13,8 @@ import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 
+import java.util.Random;
+
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -33,11 +35,13 @@ public class JukeBoxControls extends JPanel {
 
 	private JComboBox<String> musicCombo;
 	private JButton stopButton, playButton, rewindButton;
+	private JRadioButton rectButton, ovalButton, roundRectButton;
 	private File[] musicFile;
 	private File current;
 	private AudioInputStream audioStream;
 	private Clip audioClip;
 	private Image image;
+	private VisualizerPanel visualizer;
 
     private static String localDir = "C:/Users/adbre/IdeaProjects/CSC-230/BrenesJukebox/";
 
@@ -45,6 +49,9 @@ public class JukeBoxControls extends JPanel {
 	 * Default Constructor for Jukebox controls. Initializes audio files, buttons, and main window
 	 */
 	public JukeBoxControls() {
+
+		visualizer = new VisualizerPanel();
+		add(visualizer);
 
 		File f1, f2, f3, f4, f5;
 		f1 = f2 = f3 = f4 = f5 = null;
@@ -80,7 +87,9 @@ public class JukeBoxControls extends JPanel {
 		rewindButton.setBackground(Color.CYAN);
 
 
-		setPreferredSize(new Dimension(300, 150));
+
+
+		setPreferredSize(new Dimension(300, 200));
 		setBackground(Color.CYAN);
 		add(musicCombo);
 		add(rewindButton);
@@ -88,8 +97,14 @@ public class JukeBoxControls extends JPanel {
 		add(stopButton);
 
 		musicCombo.addActionListener(new ComboListener());
-		stopButton.addActionListener(event -> {if (current != null) audioClip.stop();});
-		playButton.addActionListener(event -> {if (current != null) audioClip.start();});
+		stopButton.addActionListener(event -> {if (current != null){
+			audioClip.stop();
+			visualizer.stop();
+		}});
+		playButton.addActionListener(event -> {if (current != null){
+			audioClip.start();
+			visualizer.start();
+		}});
 		rewindButton.addActionListener(event -> {if (current != null) audioClip.setFramePosition(0);});
 
 
@@ -155,6 +170,58 @@ public class JukeBoxControls extends JPanel {
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		g.drawImage(image, 125, 80, this);
+		g.drawImage(image, 125, 140, this);
+
+	}
+
+	class VisualizerPanel extends JPanel {
+		private Random random = new Random();
+		private boolean active = false;
+
+		public VisualizerPanel() {
+			setPreferredSize(new Dimension(300, 50));
+			setBackground(Color.WHITE);
+		}
+
+		public void start() {
+			active = true;
+			new Thread(() -> {
+				while (active) {
+					repaint();
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}).start();
+		}
+
+		public void stop() {
+			active = false;
+		}
+
+		@Override
+		public void paintComponent(Graphics g) {
+			super.paintComponent(g);
+			if (!active) return;
+
+			Graphics2D g2d = (Graphics2D) g;
+			int shapeCount = random.nextInt(5) + 5;
+
+			for (int i = 0; i < shapeCount; i++) {
+				g2d.setColor(new Color(random.nextInt(255), random.nextInt(255), random.nextInt(255)));
+				int x = random.nextInt(getWidth());
+				int y = random.nextInt(getHeight());
+				int w = random.nextInt(20) + 20;
+				int h = random.nextInt(20) + 20;
+
+				switch(random.nextInt(3)){
+					case 0 -> g2d.fillRect(x, y, w, h);
+					case 1 -> g2d.fillOval(x, y, w, h);
+					case 2 -> g2d.fillRoundRect(x, y, w, h, 10, 10);
+				}
+			}
+		}
 	}
 }
