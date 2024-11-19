@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 
 import java.util.Random;
+import java.util.Scanner;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -34,14 +35,14 @@ import javax.swing.*;
 public class JukeBoxControls extends JPanel {
 
 	private JComboBox<String> musicCombo;
-	private JButton stopButton, playButton, rewindButton;
-	private JRadioButton rectButton, ovalButton, roundRectButton;
+	private JButton stopButton, playButton, rewindButton, lyricsButton;
 	private File[] musicFile;
 	private File current;
 	private AudioInputStream audioStream;
 	private Clip audioClip;
 	private Image image;
 	private VisualizerPanel visualizer;
+	private File lyricsFile;
 
     private static String localDir = "C:/Users/adbre/IdeaProjects/CSC-230/BrenesJukebox/";
 
@@ -86,8 +87,8 @@ public class JukeBoxControls extends JPanel {
 		rewindButton = new JButton(null, rewindIcon);
 		rewindButton.setBackground(Color.CYAN);
 
-
-
+		lyricsButton = new JButton("LYRICS");
+		lyricsButton.setBackground(Color.CYAN);
 
 		setPreferredSize(new Dimension(300, 200));
 		setBackground(Color.CYAN);
@@ -95,6 +96,7 @@ public class JukeBoxControls extends JPanel {
 		add(rewindButton);
 		add(playButton);
 		add(stopButton);
+		add(lyricsButton);
 
 		musicCombo.addActionListener(new ComboListener());
 		stopButton.addActionListener(event -> {if (current != null){
@@ -107,9 +109,37 @@ public class JukeBoxControls extends JPanel {
 		}});
 		rewindButton.addActionListener(event -> {if (current != null) audioClip.setFramePosition(0);});
 
+		lyricsButton.addActionListener(event -> {
+			if (current != null) {
+
+				String selectedSong = (String) musicCombo.getSelectedItem();
+				if (selectedSong != null && !selectedSong.equals("Pick some jams!")) {
+					String lyrics = getLyrics(selectedSong.split(" - ")[0]);
+
+					JFrame lyricsFrame = new JFrame("Lyrics - " + selectedSong);
+					JTextArea lyricsArea = new JTextArea(lyrics);
+					lyricsArea.setEditable(false);
+					lyricsArea.setLineWrap(true);
+					lyricsArea.setWrapStyleWord(true);
+
+					lyricsFrame.add(new JScrollPane(lyricsArea));
+					lyricsFrame.setSize(400, 300);
+					lyricsFrame.setLocationRelativeTo(null);
+					lyricsFrame.setVisible(true);
+				} else {
+					JOptionPane.showMessageDialog(this, "Please select a song first!", "No Song Selected", JOptionPane.WARNING_MESSAGE);
+				}
+			} else {
+				JOptionPane.showMessageDialog(this, "Please select a song first!", "No Song Selected", JOptionPane.WARNING_MESSAGE);
+			}
+		});
+
+
 
 		current = null;
 	}
+
+
 
 	/**
 	 * Action Listener Class for Combo Selector to choose what song you want to play.
@@ -134,18 +164,23 @@ public class JukeBoxControls extends JPanel {
 					switch (musicCombo.getSelectedIndex()) {
 						case 1:
 							image = new ImageIcon(getClass(). getResource("gravesIntoGardensCover.png")).getImage();
+							lyricsFile = new File(localDir + "Graves Into Gardens.txt");
 							break;
 						case 2:
 							image = new ImageIcon(getClass(). getResource("SeparateWaysCover.png")).getImage();
+							lyricsFile = new File(localDir + "Separate Ways.txt");
 							break;
 						case 3:
 							image = new ImageIcon(getClass(). getResource("LoveLikeThisCover.png")).getImage();
+							lyricsFile = new File(localDir + "Love Like This.txt");
 							break;
 						case 4:
 							image = new ImageIcon(getClass(). getResource("SpiritedCover.png")).getImage();
+							lyricsFile = new File(localDir + "Ripple.txt");
 							break;
 						case 5:
 							image = new ImageIcon(getClass(). getResource("sportsCover.png")).getImage();
+							lyricsFile = new File(localDir + "If This Is It.txt");
 							break;
 						default:
 							image = null;
@@ -174,15 +209,24 @@ public class JukeBoxControls extends JPanel {
 
 	}
 
+	/***
+	 * JPanel used to draw the random shapes as an audio visualizer for the main Jukebox Application
+	 */
 	class VisualizerPanel extends JPanel {
 		private Random random = new Random();
 		private boolean active = false;
 
+		/**
+		 * Sets size and color of frame to overlay on main JPanel
+		 */
 		public VisualizerPanel() {
 			setPreferredSize(new Dimension(300, 50));
 			setBackground(Color.WHITE);
 		}
 
+		/**
+		 * Starts the visualizer, changes drawing every half second to avoid cpu overload
+		 */
 		public void start() {
 			active = true;
 			new Thread(() -> {
@@ -197,10 +241,17 @@ public class JukeBoxControls extends JPanel {
 			}).start();
 		}
 
+		/**
+		 * stops the visualizer
+		 */
 		public void stop() {
 			active = false;
 		}
 
+		/**
+		 * Draws random amount of random colored random shapes.
+		 * @param g the <code>Graphics</code> object to protect
+		 */
 		@Override
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
@@ -223,5 +274,28 @@ public class JukeBoxControls extends JPanel {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Creates a String of the song lyrics pulled from the selected file for the selected song.
+	 * @param songName used to choose which song to chose to open file and pull lyrics from
+	 * @return String of the song lyrics, formatted the same as the file it was pulled from
+	 */
+	private String getLyrics(String songName){
+		StringBuilder lyrics = new StringBuilder();
+		try{
+			if(lyricsFile.exists()){
+				Scanner scanner = new Scanner(lyricsFile);
+				while (scanner.hasNextLine()){
+					lyrics.append(scanner.nextLine()).append("\n");
+				}
+				scanner.close();
+			} else{
+				lyrics.append("Lyrics Not Available");
+			}
+		} catch (IOException e){
+			lyrics.append("Error reading Lyrics:").append(e.getMessage());
+		}
+		return lyrics.toString();
 	}
 }
