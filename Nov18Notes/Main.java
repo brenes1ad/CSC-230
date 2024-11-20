@@ -30,6 +30,8 @@ public class Main {
             System.out.println("Cat's new identity is: " + c);
             System.out.println("stored at: " + time);
             System.out.println(myCat);
+
+            System.out.println("Same cat? " + c.equals(myCat));
         } catch (Exception e){
             System.out.println("Oops!" + e);
         }

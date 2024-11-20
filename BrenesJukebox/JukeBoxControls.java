@@ -59,11 +59,11 @@ public class JukeBoxControls extends JPanel {
 		// get the audio clips if we can!
 		
 		try {
-			f1 = new File(localDir + "Graves Into Gardens.wav");
-			f2 = new File(localDir + "Separate Ways.wav");
-			f3 = new File(localDir + "Love Like This.wav");
-			f4 = new File(localDir + "Ripple.wav");
-			f5 = new File(localDir + "If This Is It.wav");
+			f1 = new File(localDir + "Media/Graves Into Gardens.wav");
+			f2 = new File(localDir + "Media/Separate Ways.wav");
+			f3 = new File(localDir + "Media/Love Like This.wav");
+			f4 = new File(localDir + "Media/Ripple.wav");
+			f5 = new File(localDir + "Media/If This Is It.wav");
 		} catch (Exception e) {
 			System.err.println("Houston, we have a problem.");
 		}
@@ -163,24 +163,24 @@ public class JukeBoxControls extends JPanel {
 
 					switch (musicCombo.getSelectedIndex()) {
 						case 1:
-							image = new ImageIcon(getClass(). getResource("gravesIntoGardensCover.png")).getImage();
-							lyricsFile = new File(localDir + "Graves Into Gardens.txt");
+							image = new ImageIcon(getClass(). getResource("Covers/gravesIntoGardensCover.png")).getImage();
+							lyricsFile = new File(localDir + "Lyrics/Graves Into Gardens.txt");
 							break;
 						case 2:
-							image = new ImageIcon(getClass(). getResource("SeparateWaysCover.png")).getImage();
-							lyricsFile = new File(localDir + "Separate Ways.txt");
+							image = new ImageIcon(getClass(). getResource("Covers/SeparateWaysCover.png")).getImage();
+							lyricsFile = new File(localDir + "Lyrics/Separate Ways.txt");
 							break;
 						case 3:
-							image = new ImageIcon(getClass(). getResource("LoveLikeThisCover.png")).getImage();
-							lyricsFile = new File(localDir + "Love Like This.txt");
+							image = new ImageIcon(getClass(). getResource("Covers/LoveLikeThisCover.png")).getImage();
+							lyricsFile = new File(localDir + "Lyrics/Love Like This.txt");
 							break;
 						case 4:
-							image = new ImageIcon(getClass(). getResource("SpiritedCover.png")).getImage();
-							lyricsFile = new File(localDir + "Ripple.txt");
+							image = new ImageIcon(getClass(). getResource("Covers/SpiritedCover.png")).getImage();
+							lyricsFile = new File(localDir + "Lyrics/Ripple.txt");
 							break;
 						case 5:
-							image = new ImageIcon(getClass(). getResource("sportsCover.png")).getImage();
-							lyricsFile = new File(localDir + "If This Is It.txt");
+							image = new ImageIcon(getClass(). getResource("Covers/sportsCover.png")).getImage();
+							lyricsFile = new File(localDir + "Lyrics/If This Is It.txt");
 							break;
 						default:
 							image = null;
