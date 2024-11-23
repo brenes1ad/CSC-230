@@ -1,4 +1,4 @@
-package BrenesJukebox;
+package BrenesJukebox2;
 
 /**
  * JukeBoxControls.java -- example from Listing 6.13 of Lewis et al, 4th Ed.
@@ -13,6 +13,7 @@ import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
 
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -35,16 +36,19 @@ import javax.swing.*;
 public class JukeBoxControls extends JPanel {
 
 	private JComboBox<String> musicCombo;
-	private JButton stopButton, playButton, rewindButton, lyricsButton;
+	private JButton stopButton, playButton, rewindButton, chooserButton;
 	private File[] musicFile;
 	private File current;
 	private AudioInputStream audioStream;
 	private Clip audioClip;
 	private Image image;
 	private VisualizerPanel visualizer;
-	private File lyricsFile;
+	private ArrayList<String> songList;
+	private ArrayList<String> coverList;
 
-    private static String localDir = "C:/Users/adbre/IdeaProjects/CSC-230/BrenesJukebox/";
+
+
+    private static String localDir = "C:/Users/adbre/IdeaProjects/CSC-230/BrenesJukebox2/Media";
 
 	/**
 	 * Default Constructor for Jukebox controls. Initializes audio files, buttons, and main window
@@ -57,21 +61,32 @@ public class JukeBoxControls extends JPanel {
 		File f1, f2, f3, f4, f5;
 		f1 = f2 = f3 = f4 = f5 = null;
 		// get the audio clips if we can!
+
+		songList = new ArrayList<String>();
+		coverList = new ArrayList<String>();
+		File[] files = new File(localDir).listFiles();
+		for(File file: files){
+			if(file.getName().endsWith(".wav")){
+				songList.add(file.getName());
+			}
+			if(file.getName().endsWith(".png")){
+				coverList.add(file.getName());
+			}
+		}
 		
 		try {
-			f1 = new File(localDir + "Media/gravesIntoGardens.wav");
-			f2 = new File(localDir + "Media/separateWays.wav");
-			f3 = new File(localDir + "Media/loveLikeThis.wav");
-			f4 = new File(localDir + "Media/Ripple.wav");
-			f5 = new File(localDir + "Media/ifThisIsIt.wav");
+			f1 = new File(localDir + "/" + songList.get(0));
+			f2 = new File(localDir + "/" + songList.get(1));
+			f3 = new File(localDir + "/" + songList.get(2));
+			f4 = new File(localDir + "/" + songList.get(3));
+			f5 = new File(localDir + "/" + songList.get(4));
 		} catch (Exception e) {
 			System.err.println("Houston, we have a problem.");
 		}
 		musicFile = new File [] { null, f1, f2, f3, f4, f5};
 
-		String[] musicNames = { "Pick some jams!", "Graves Into Gardens - Elevation Worship", "Separate Ways - Journey",
-				"Love Like This - Ben Rector",
-				"Ripple - Spirited", "If This Is It - Huey Lewis & The News" };
+		String[] musicNames = { "Pick some jams!", songList.get(0), songList.get(1), songList.get(2), songList.get(3),
+		songList.get(4)};
 
 		musicCombo = new JComboBox<String>(musicNames);
 		musicCombo.setBackground(Color.CYAN);
@@ -86,17 +101,16 @@ public class JukeBoxControls extends JPanel {
 		stopButton.setBackground(Color.CYAN);
 		rewindButton = new JButton(null, rewindIcon);
 		rewindButton.setBackground(Color.CYAN);
+		chooserButton = new JButton("File Chooser");
+		chooserButton.setBackground(Color.CYAN);
 
-		lyricsButton = new JButton("LYRICS");
-		lyricsButton.setBackground(Color.CYAN);
-
-		setPreferredSize(new Dimension(300, 200));
+		setPreferredSize(new Dimension(400, 250));
 		setBackground(Color.CYAN);
 		add(musicCombo);
 		add(rewindButton);
 		add(playButton);
 		add(stopButton);
-		add(lyricsButton);
+		add(chooserButton);
 
 		musicCombo.addActionListener(new ComboListener());
 		stopButton.addActionListener(event -> {if (current != null){
@@ -109,31 +123,7 @@ public class JukeBoxControls extends JPanel {
 		}});
 		rewindButton.addActionListener(event -> {if (current != null) audioClip.setFramePosition(0);});
 
-		lyricsButton.addActionListener(event -> {
-			if (current != null) {
-
-				String selectedSong = (String) musicCombo.getSelectedItem();
-				if (selectedSong != null && !selectedSong.equals("Pick some jams!")) {
-					String lyrics = getLyrics(selectedSong.split(" - ")[0]);
-
-					JFrame lyricsFrame = new JFrame("Lyrics - " + selectedSong);
-					JTextArea lyricsArea = new JTextArea(lyrics);
-					lyricsArea.setEditable(false);
-					lyricsArea.setLineWrap(true);
-					lyricsArea.setWrapStyleWord(true);
-
-					lyricsFrame.add(new JScrollPane(lyricsArea));
-					lyricsFrame.setSize(400, 300);
-					lyricsFrame.setLocationRelativeTo(null);
-					lyricsFrame.setVisible(true);
-				} else {
-					JOptionPane.showMessageDialog(this, "Please select a song first!", "No Song Selected", JOptionPane.WARNING_MESSAGE);
-				}
-			} else {
-				JOptionPane.showMessageDialog(this, "Please select a song first!", "No Song Selected", JOptionPane.WARNING_MESSAGE);
-			}
-		});
-
+		chooserButton.addActionListener(event -> openFileChooserFrame());
 
 
 		current = null;
@@ -163,24 +153,19 @@ public class JukeBoxControls extends JPanel {
 
 					switch (musicCombo.getSelectedIndex()) {
 						case 1:
-							image = new ImageIcon(getClass(). getResource("Covers/gravesIntoGardens.png")).getImage();
-							lyricsFile = new File(localDir + "Lyrics/Graves Into Gardens.txt");
+							image = new ImageIcon((localDir + "/" + coverList.get(0))).getImage();
 							break;
 						case 2:
-							image = new ImageIcon(getClass(). getResource("Covers/separateWays.png")).getImage();
-							lyricsFile = new File(localDir + "Lyrics/Separate Ways.txt");
+							image = new ImageIcon((localDir + "/" + coverList.get(1))).getImage();
 							break;
 						case 3:
-							image = new ImageIcon(getClass(). getResource("Covers/loveLikeThis.png")).getImage();
-							lyricsFile = new File(localDir + "Lyrics/Love Like This.txt");
+							image = new ImageIcon((localDir + "/" + coverList.get(2))).getImage();
 							break;
 						case 4:
-							image = new ImageIcon(getClass(). getResource("Covers/Ripple.png")).getImage();
-							lyricsFile = new File(localDir + "Lyrics/Ripple.txt");
+							image = new ImageIcon((localDir + "/" + coverList.get(3))).getImage();
 							break;
 						case 5:
-							image = new ImageIcon(getClass(). getResource("Covers/ifThisIsIt.png")).getImage();
-							lyricsFile = new File(localDir + "Lyrics/If This Is It.txt");
+							image = new ImageIcon((localDir + "/" + coverList.get(4))).getImage();
 							break;
 						default:
 							image = null;
@@ -205,7 +190,7 @@ public class JukeBoxControls extends JPanel {
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		g.drawImage(image, 125, 140, this);
+		g.drawImage(image, 150, 140, this);
 
 	}
 
@@ -220,7 +205,7 @@ public class JukeBoxControls extends JPanel {
 		 * Sets size and color of frame to overlay on main JPanel
 		 */
 		public VisualizerPanel() {
-			setPreferredSize(new Dimension(300, 50));
+			setPreferredSize(new Dimension(400, 50));
 			setBackground(Color.WHITE);
 		}
 
@@ -276,26 +261,29 @@ public class JukeBoxControls extends JPanel {
 		}
 	}
 
-	/**
-	 * Creates a String of the song lyrics pulled from the selected file for the selected song.
-	 * @param songName used to choose which song to chose to open file and pull lyrics from
-	 * @return String of the song lyrics, formatted the same as the file it was pulled from
-	 */
-	private String getLyrics(String songName){
-		StringBuilder lyrics = new StringBuilder();
-		try{
-			if(lyricsFile.exists()){
-				Scanner scanner = new Scanner(lyricsFile);
-				while (scanner.hasNextLine()){
-					lyrics.append(scanner.nextLine()).append("\n");
-				}
-				scanner.close();
-			} else{
-				lyrics.append("Lyrics Not Available");
+	private void openFileChooserFrame() {
+
+		JFrame chooserFrame = new JFrame("Select Directory");
+		chooserFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		chooserFrame.setSize(500, 400);
+
+
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+		fileChooser.addActionListener(e -> {
+			if (e.getActionCommand().equals(JFileChooser.APPROVE_SELECTION)) {
+				File selectedFile = fileChooser.getSelectedFile();
+				System.out.println("Selected Directory: " + selectedFile.getAbsolutePath());
+				localDir = selectedFile.getAbsolutePath();
+				System.out.println(localDir);
+				chooserFrame.dispose();
+			} else if (e.getActionCommand().equals(JFileChooser.CANCEL_SELECTION)) {
+				chooserFrame.dispose();
 			}
-		} catch (IOException e){
-			lyrics.append("Error reading Lyrics:").append(e.getMessage());
-		}
-		return lyrics.toString();
+		});
+
+		chooserFrame.add(fileChooser);
+		chooserFrame.setVisible(true);
 	}
 }
