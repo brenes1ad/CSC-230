@@ -5,7 +5,7 @@ package BrenesJukebox2;
  * A. Thall
  * CSC 121 W18
  * 
- * Example using AudioClips with local files and JComboBox objects
+ *
  */
 
 import java.awt.*;
@@ -28,8 +28,9 @@ import javax.swing.*;
 
 /**
  * Mini Jukebox Application. Has the Ability to pause, play, and rewind songs; displays album covers;
- * and display audio visualizer
- * @author thall
+ * and display audio visualizer. Added in 2.0 is the ability to choose one's own directory for media
+ * and the ability to save to a config file so you won't need to re-input the new directory
+ * @author Tony Brenes
  *
  */
 

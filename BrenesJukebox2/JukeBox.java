@@ -10,8 +10,9 @@ package BrenesJukebox2;
 import javax.swing.*;
 
 /**
- * @author thall
+ * Skeleton Code by thall
  *
+ * @author Tony Brenes
  */
 public class JukeBox {
 
@@ -20,7 +21,7 @@ public class JukeBox {
 	 */
 	public static void main(String[] args) {
 
-		JFrame frame = new JFrame("Java Juke Box");
+		JFrame frame = new JFrame("Java Jukebox 2.0");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().add(new JukeBoxControls());
 		
