@@ -10,8 +10,7 @@ package BrenesJukebox2;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -30,11 +29,17 @@ import javax.swing.*;
  * Mini Jukebox Application. Has the Ability to pause, play, and rewind songs; displays album covers;
  * and display audio visualizer. Added in 2.0 is the ability to choose one's own directory for media
  * and the ability to save to a config file so you won't need to re-input the new directory
+ *
+ * CSC 230 F24
+ * 12/2
+ *
+ * Skeleton Code by A. Thall
+ *
  * @author Tony Brenes
  *
  */
 
-public class JukeBoxControls extends JPanel {
+public class JukeBoxControls extends JPanel implements Serializable{
 
 	private JComboBox<String> musicCombo;
 	private JButton stopButton, playButton, rewindButton, chooserButton;
@@ -47,14 +52,19 @@ public class JukeBoxControls extends JPanel {
 	private ArrayList<String> songList;
 	private ArrayList<String> coverList;
 
+	private JukeBoxConfig config;
+	private static final String CONFIG_FILE = "JBconfig.ser";
 
 
-    private static String localDir = "C:/Users/adbre/IdeaProjects/CSC-230/BrenesJukebox2/Media";
+
+    private static String localDir;
 
 	/**
 	 * Default Constructor for Jukebox controls. Initializes audio files, buttons, and main window
 	 */
 	public JukeBoxControls() {
+		config = loadConfig();
+		localDir = config.getMediaFolder();
 
 		visualizer = new VisualizerPanel();
 		add(visualizer);
@@ -262,6 +272,10 @@ public class JukeBoxControls extends JPanel {
 		}
 	}
 
+	/**
+	 * Controls the actions of the fileChooser button. Opens a new frame with the directory chooser and saves
+	 * the new config if a new directory is chosen.
+	 */
 	private void openFileChooserFrame() {
 
 		JFrame chooserFrame = new JFrame("Select Directory");
@@ -278,6 +292,7 @@ public class JukeBoxControls extends JPanel {
 				System.out.println("Selected Directory: " + selectedFile.getAbsolutePath());
 				localDir = selectedFile.getAbsolutePath();
 				System.out.println(localDir);
+				saveConfig();
 				chooserFrame.dispose();
 			} else if (e.getActionCommand().equals(JFileChooser.CANCEL_SELECTION)) {
 				chooserFrame.dispose();
@@ -286,5 +301,31 @@ public class JukeBoxControls extends JPanel {
 
 		chooserFrame.add(fileChooser);
 		chooserFrame.setVisible(true);
+	}
+
+	/**
+	 * Used to attempt to load an existing config file(if one even exists) on project load up or creates a new one
+	 * if one doesn't already exist.
+	 * @return either the existing config object or creates a new config with the default media directory.
+	 */
+	private JukeBoxConfig loadConfig(){
+		try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(CONFIG_FILE))){
+			return (JukeBoxConfig) ois.readObject();
+		} catch (Exception e){
+			return new JukeBoxConfig("C:/Users/adbre/IdeaProjects/CSC-230/BrenesJukebox2/Media");
+		}
+	}
+
+	/**
+	 * Used to save the config object to given file name. Config is saved whenever the user selects a new
+	 * directory as the working directory for media.
+	 */
+	private void saveConfig(){
+		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(CONFIG_FILE))){
+			oos.writeObject(config);
+			System.out.println("Saved Config");
+		} catch(IOException e){
+			System.err.println(e);
+		}
 	}
 }
